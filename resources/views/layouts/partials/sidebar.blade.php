@@ -199,7 +199,7 @@
                 <!--    </ul>-->
                 <!--</li>-->
                 
-                    @if($user && $user->user_type === 'Admin')
+                    @if($user && $user->user_type === 'Admin' || $user->user_type === 'Manager')
                  <li class="slide">
                     <a class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0);">
                         <i class="side-menu__icon fe fe-shield"></i>

@@ -191,14 +191,14 @@
                     <th>Licance no</th>
                     <th>G number</th>
                     <th>Facility number</th>
-                    <th>Licencing Officer name</th>
-                    <th>Licencing Officer email</th>
-                    <th>Licencing Officer Mo. No</th>
+                    <th>Licencing  name</th>
+                    <th>Licencing  email</th>
+                    <th>Licencing  Mo. No</th>
                     <th>Number of Classrooms</th>
-                    <th>Business License Doc</th>
-                    <th>Facility License Doc</th>
-                    <th>Incorporation upload Doc</th>
-                    <th>CCFO Doc</th>
+                    <th>Business License </th>
+                    <th>Facility License </th>
+                    <th>Incorporation </th>
+                    <th>CCOF</th>
                     <th>Inspection Reports </th>
                     <th> Gallery</th> 
                     <th>Actions</th>
@@ -283,24 +283,25 @@ View</td>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>📍 Address:</strong> {{ $center->center_address }}</p>
-                    <p><strong>📧 Email:</strong> <a href="mailto:{{ $center->center_email }}">{{ $center->center_email }}</a></p>
-                    <p><strong>📞 Phone:</strong> {{ $center->phone_number }}</p>
-                    <p><strong>🔒 License No:</strong> {{ $center->license_number }}</p>
-                    <a href="{{ asset($center->inspection_reports) }}" target="_blank" class="btn btn-link p-0">View Document</a>
+                    <p><strong> Address:</strong> {{ $center->center_address }}</p>
+                    <p><strong> Email:</strong> <a href="mailto:{{ $center->center_email }}">{{ $center->center_email }}</a></p>
+                    <p><strong> Phone:</strong> {{ $center->phone_number }}</p>
+                    <p><strong> License No:</strong> {{ $center->license_number }}</p>
+                     <p><strong> Inspection Reports:</strong> 
+                    <a href="{{ asset($center->inspection_reports) }}" target="_blank" class="btn btn-link p-0">View Document</a></p>
                     
-                    <!--<p><strong>🏷️ G Number:</strong> {{ $center->g_number }}</p>-->
-                    <!--<p><strong>🏢 Facility No:</strong> {{ $center->facility_number }}</p>-->
+                    <!--<p><strong> G Number:</strong> {{ $center->g_number }}</p>-->
+                    <!--<p><strong> Facility No:</strong> {{ $center->facility_number }}</p>-->
                 </div>
                 <div class="col-md-6">
-                    <p><strong>👮 Licensing Officer:</strong> {{ $center->licensing_officer_name }}</p>
-                    <p><strong>📩 Officer Email:</strong> <a href="mailto:{{ $center->licensing_officer_email }}">{{ $center->licensing_officer_email }}</a></p>
-                    <p><strong>📱 Officer Mobile:</strong> {{ $center->licensing_officer_mobile }}</p>
-                    <p><strong>🏫 Classrooms:</strong> <span class="badge bg-info text-dark">{{ $center->classes_count }}</span></p>
-                    <p><strong>📄 Business License:</strong> 
+                    <!-- <p><strong> Licensing Officer:</strong> {{ $center->licensing_officer_name }}</p> -->
+                    <!-- <p><strong> Officer Email:</strong> <a href="mailto:{{ $center->licensing_officer_email }}">{{ $center->licensing_officer_email }}</a></p>
+                    <p><strong> Officer Mobile:</strong> {{ $center->licensing_officer_mobile }}</p> -->
+                    <p><strong> Classrooms:</strong> <span class="badge bg-info text-dark">{{ $center->classes_count }}</span></p>
+                    <p><strong> Business License:</strong> 
                         <a href="{{ $center->business_license_doc }}" target="_blank">View</a>
                     </p>
-                    <p><strong>🏬 Facility License:</strong> 
+                    <p><strong> Facility License:</strong> 
                         <a href="{{ $center->facility_license_doc }}" target="_blank">View</a>
                     </p>
                     

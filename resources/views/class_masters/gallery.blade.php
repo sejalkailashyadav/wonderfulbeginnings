@@ -64,7 +64,7 @@
                             target="_blank">
                                 <i class="bi bi-eye me-2"></i> View
                             </a>
-
+  @if($user && $user->user_type === 'Admin')
                             {{-- Replace File Form --}}
                             <form action="{{ route('class_masters.gallery.update', [$class->class_id, $loop->index]) }}" 
                                 method="POST" enctype="multipart/form-data" class="mb-2">
@@ -90,7 +90,7 @@
                                     <i class="bi bi-trash me-2"></i> Delete
                                 </button>
                             </form>
-
+@endif
                         </div>
                     </div>
                 </div>

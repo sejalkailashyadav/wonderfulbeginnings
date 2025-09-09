@@ -488,6 +488,18 @@ public function filterChildren(Request $request)
         })
         ->get();
 
+       
+        //  Sync institution/transit/account for existing reports
+foreach ($existingReports as $report) {
+    if ($report->child) {
+        $report->update([
+            'institution_number' => $report->child->institution_number,
+            'transit_number'     => $report->child->transit_number,
+            'account_number'     => $report->child->account_number,
+        ]);
+    }
+}
+
     // Find missing children
     $existingChildIds = $existingReports->pluck('child_id')->toArray();
     $missingChildren = $allActiveChildren->whereNotIn('child_id', $existingChildIds);
@@ -558,6 +570,9 @@ public function filterChildren(Request $request)
     'ccfri' => $request->ccfri,
     'accb' => $request->accb ?? 0, //  NEW
     'total' => $request->monthly_fee - ($request->ccfri + ($request->accb ?? 0)), //  NEW TOTAL
+     'institution_number' => $request->institution_number ?? 0,
+            'transit_number' => $request->transit_number ?? 0,
+            'account_number' => $request->account_number ?? 0,
 ]);
 
 return redirect()->route('center.month.filter')->with('success', 'Report updated successfully!');
@@ -948,6 +963,15 @@ foreach ($request->reports as $data) {
  if (isset($data['notes'])) {
             $updateData['notes'] = $data['notes'];
         }
+
+        //  Always sync latest from CurrentChildMaster
+        $child = CurrentChildMaster::where('child_id', $report->child_id)->first();
+        if ($child) {
+            $updateData['institution_number'] = $child->institution_number;
+            $updateData['transit_number']     = $child->transit_number;
+            $updateData['account_number']     = $child->account_number;
+        }
+
         $report->update($updateData);
 
         // Optional: update fees_id if changed
