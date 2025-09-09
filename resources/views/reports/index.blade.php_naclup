@@ -1,0 +1,34 @@
+@extends('layouts.app')
+
+    @section('content')
+    <div class="container">
+        <h2>Monthly Reports</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <!-- <th>ID</th> -->
+                    <th>Month/Year</th>
+                    <th>Center name</th>
+                    <th>Report name</th>
+                    <th>View Logs</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($reports as $report)
+                    <tr>
+                        <!-- <td>{{ $report->month_report_id }}</td> -->
+                        <td>{{ $report->month_year }}</td>
+                        <td>{{ $report->center_name }}</td>
+                         <td>{{ $report->report_name }}</td>
+                        <td>
+                            <a href="{{ url('/monthly-reports/'.$report->month_report_id) }}" class="btn btn-primary btn-sm">View Report</a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endsection
+
+
+

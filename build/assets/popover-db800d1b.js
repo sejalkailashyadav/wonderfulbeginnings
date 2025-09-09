@@ -1,0 +1,1 @@
+$(function(){$(document).on("click",function(t){$('[data-bs-toggle="popover"]').each(function(){!$(this).is(t.target)&&$(this).has(t.target).length===0&&$(".popover").has(t.target).length===0&&((($(this).popover("hide").data("bs.popover")||{}).inState||{}).click=!1)})})});
