@@ -960,9 +960,24 @@ foreach ($request->reports as $data) {
             $updateData['account_number'] = $data['account_number'];
         }
         
- if (isset($data['notes'])) {
-            $updateData['notes'] = $data['notes'];
-        }
+//  if (isset($data['notes'])) {
+//             $updateData['notes'] = $data['notes'];
+//         }
+
+
+ $user = session('user');
+$existingNotes = $report->notes ?? []; // already decoded array
+
+if ($user->user_type === 'Admin') {
+    $existingNotes['admin'] = $data['notes'] ?? null;
+} elseif ($user->user_type === 'Manager') {
+    $existingNotes['manager'] = $data['notes'] ?? null;
+}
+
+$report->update([
+    'notes' => $existingNotes, // no json_encode, flat array
+]);
+
 
         //  Always sync latest from CurrentChildMaster
         $child = CurrentChildMaster::where('child_id', $report->child_id)->first();

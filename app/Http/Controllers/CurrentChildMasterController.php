@@ -37,11 +37,11 @@ class CurrentChildMasterController extends Controller
     // }
 //admin & manger nmidkeare afte test  //now commemst 
 
-// public function index(Request $request)
+    // public function index(Request $request)
 // {
 //     $user = session('user');
 
-//     // if Admin: show all
+    //     // if Admin: show all
 //     if ($user->user_type === 'Admin') {
 //         $childs = CurrentChildMaster::with(['center', 'class', 'fee'])->get();
 //     } else {
@@ -51,39 +51,39 @@ class CurrentChildMasterController extends Controller
 //             ->get();
 //     }
 
-//     $centers = CenterManagements::all();
+    //     $centers = CenterManagements::all();
 //     $fees = CurrentFeesMaster::all();
 
-//     return view('current_child_masters.index', compact('childs', 'centers', 'fees'));
+    //     return view('current_child_masters.index', compact('childs', 'centers', 'fees'));
 // }
 
-//woringv chnages niwo brofer combined fiklter 
+    //woringv chnages niwo brofer combined fiklter 
 
 
-// public function index(Request $request)
+    // public function index(Request $request)
 // {
 //     $user = session('user');
 
-//     $query = CurrentChildMaster::with(['center', 'class', 'fee']);
+    //     $query = CurrentChildMaster::with(['center', 'class', 'fee']);
 
-//     if ($user->user_type !== 'Admin') {
+    //     if ($user->user_type !== 'Admin') {
 //         $query->where('center_id', $user->center_id);
 //     }
 
-//     if ($request->filled('class_id')) {
+    //     if ($request->filled('class_id')) {
 //         $query->where('class_id', $request->input('class_id'));
 //     }
 
-//     if ($request->filled('status')) {
+    //     if ($request->filled('status')) {
 //         $query->where('status', $request->input('status'));
 //     }
 
-//     $childs = $query->get();
+    //     $childs = $query->get();
 
-//     $centers = CenterManagements::all();
+    //     $centers = CenterManagements::all();
 //     $fees = CurrentFeesMaster::all();
 
-//     // nly fetch classes that are in the current result set (filtered)
+    //     // nly fetch classes that are in the current result set (filtered)
 //     if ($user->user_type === 'Admin') {
 //         $classes = ClassMaster::all();
 //     } else {
@@ -92,52 +92,52 @@ class CurrentChildMasterController extends Controller
 //         $classes = ClassMaster::whereIn('class_id', $classIds)->get();
 //     }
 
-//     return view('current_child_masters.index', compact('childs', 'centers', 'fees', 'classes'));
+    //     return view('current_child_masters.index', compact('childs', 'centers', 'fees', 'classes'));
 // }
 
 
 
-//new  23/-8/25 
+    //new  23/-8/25 
 
 
-public function index(Request $request)
-{
-    $user = session('user');
+    public function index(Request $request)
+    {
+        $user = session('user');
 
-    $query = CurrentChildMaster::with(['center', 'class', 'fee']);
+        $query = CurrentChildMaster::with(['center', 'class', 'fee']);
 
-    if ($user->user_type !== 'Admin') {
-        // Non-admins can only see their own center
-        $query->where('center_id', $user->center_id);
-    } else {
-        // Admin can filter by center if selected
-        if ($request->filled('center_id')) {
-            $query->where('center_id', $request->center_id);
+        if ($user->user_type !== 'Admin') {
+            // Non-admins can only see their own center
+            $query->where('center_id', $user->center_id);
+        } else {
+            // Admin can filter by center if selected
+            if ($request->filled('center_id')) {
+                $query->where('center_id', $request->center_id);
+            }
         }
+
+        if ($request->filled('class_id')) {
+            $query->where('class_id', $request->class_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $childs = $query->get();
+
+        $centers = CenterManagements::all();
+        $fees = CurrentFeesMaster::all();
+
+        if ($user->user_type === 'Admin') {
+            $classes = ClassMaster::all();
+        } else {
+            $classIds = $childs->pluck('class_id')->unique()->filter();
+            $classes = ClassMaster::whereIn('class_id', $classIds)->get();
+        }
+
+        return view('current_child_masters.index', compact('childs', 'centers', 'fees', 'classes'));
     }
-
-    if ($request->filled('class_id')) {
-        $query->where('class_id', $request->class_id);
-    }
-
-    if ($request->filled('status')) {
-        $query->where('status', $request->status);
-    }
-
-    $childs = $query->get();
-
-    $centers = CenterManagements::all();
-    $fees = CurrentFeesMaster::all();
-
-    if ($user->user_type === 'Admin') {
-        $classes = ClassMaster::all();
-    } else {
-        $classIds = $childs->pluck('class_id')->unique()->filter();
-        $classes = ClassMaster::whereIn('class_id', $classIds)->get();
-    }
-
-    return view('current_child_masters.index', compact('childs', 'centers', 'fees', 'classes'));
-}
 
 
     //update names's filter with search bar  now 
@@ -173,65 +173,65 @@ public function index(Request $request)
     // }
 
 
-//ewn 23/-8/25
+    //ewn 23/-8/25
 
 
-public function filter(Request $request)
-{
-    $query = CurrentChildMaster::with(['center', 'class', 'fee']);
+    public function filter(Request $request)
+    {
+        $query = CurrentChildMaster::with(['center', 'class', 'fee']);
 
-    // Center filter
-    if ($request->filled('center_id')) {
-        $query->where('center_id', $request->center_id);
+        // Center filter
+        if ($request->filled('center_id')) {
+            $query->where('center_id', $request->center_id);
+        }
+
+        // Class filter
+        if ($request->filled('class_id')) {
+            $query->where('class_id', $request->class_id);
+        }
+
+        // Fee filter
+        if ($request->filled('fees_id')) {
+            $query->where('fees_id', $request->fees_id);
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Search (child or parent names)
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('child_first_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('child_last_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('parent_first_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('parent_last_name', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $childs = $query->get();
+
+        $view = view('current_child_masters.partials.child-table', compact('childs'))->render();
+
+        return response()->json([
+            'success' => true,
+            'html' => $view,
+        ]);
     }
 
-    // Class filter
-    if ($request->filled('class_id')) {
-        $query->where('class_id', $request->class_id);
-    }
-
-    // Fee filter
-    if ($request->filled('fees_id')) {
-        $query->where('fees_id', $request->fees_id);
-    }
-
-    // Status filter
-    if ($request->filled('status')) {
-        $query->where('status', $request->status);
-    }
-
-    // Search (child or parent names)
-    if ($request->filled('search')) {
-        $query->where(function ($q) use ($request) {
-            $q->where('child_first_name', 'like', '%' . $request->search . '%')
-              ->orWhere('child_last_name', 'like', '%' . $request->search . '%')
-              ->orWhere('parent_first_name', 'like', '%' . $request->search . '%')
-              ->orWhere('parent_last_name', 'like', '%' . $request->search . '%');
-        });
-    }
-
-    $childs = $query->get();
-
-    $view = view('current_child_masters.partials.child-table', compact('childs'))->render();
-
-    return response()->json([
-        'success' => true,
-        'html' => $view,
-    ]);
-}
 
 
+    //admin & manger access 
 
-//admin & manger access 
 
-
-// public function filter(Request $request)
+    // public function filter(Request $request)
 // {
 //     $user = session('user');
 
-//     $query = CurrentChildMaster::with(['center', 'fees', 'class']);
+    //     $query = CurrentChildMaster::with(['center', 'fees', 'class']);
 
-//     if ($user->user_type !== 'Admin') {
+    //     if ($user->user_type !== 'Admin') {
 //         $query->where('center_id', $user->center_id);
 //     } else {
 //         if ($request->center_id) {
@@ -239,22 +239,22 @@ public function filter(Request $request)
 //         }
 //     }
 
-//     if ($request->fee_id) {
+    //     if ($request->fee_id) {
 //         $query->where('fee_id', $request->fee_id);
 //     }
 
-//     if ($request->search) {
+    //     if ($request->search) {
 //         $query->where(function ($q) use ($request) {
 //             $q->where('child_name', 'like', '%' . $request->search . '%')
 //               ->orWhere('parent_name', 'like', '%' . $request->search . '%');
 //         });
 //     }
 
-//     $childs = $query->get();
+    //     $childs = $query->get();
 
-//     $html = view('current_child_masters.partials.child-table', compact('childs'))->render();
+    //     $html = view('current_child_masters.partials.child-table', compact('childs'))->render();
 
-//     return response()->json([
+    //     return response()->json([
 //         'success' => true,
 //         'html' => $html
 //     ]);
@@ -280,30 +280,31 @@ public function filter(Request $request)
     //     return view('current_child_masters.create', compact('centers', 'classes', 'fees', 'allChildren'));
     // }
 
-//amager & admin 
+    //amager & admin 
 
-public function create()
-{
-    $user = session('user');
+    public function create()
+    {
+        $user = session('user');
 
-    if ($user->user_type === 'Manager') {
-        $centers = CenterManagements::where('center_id', $user->center_id)->get();
-        $classes = ClassMaster::where('center_id', $user->center_id)->get();
-        $fees = CurrentFeesMaster::where('center_id', $user->center_id)->get();
-        $allChildren = CurrentChildMaster::where('center_id', $user->center_id)->get();
-    } else {
-        $centers = CenterManagements::all();
-        $classes = ClassMaster::all();
-        $fees = CurrentFeesMaster::all();
-        $allChildren = CurrentChildMaster::all();
+        if ($user->user_type === 'Manager') {
+            $centers = CenterManagements::where('center_id', $user->center_id)->get();
+            $classes = ClassMaster::where('center_id', $user->center_id)->get();
+            $fees = CurrentFeesMaster::where('center_id', $user->center_id)->get();
+            $allChildren = CurrentChildMaster::where('center_id', $user->center_id)->get();
+        } else {
+            $centers = CenterManagements::all();
+            $classes = ClassMaster::all();
+            $fees = CurrentFeesMaster::all();
+            $allChildren = CurrentChildMaster::all();
+        }
+        // $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        $daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        return view('current_child_masters.create', compact('centers', 'classes', 'fees', 'allChildren', 'daysOfWeek'));
     }
-    // $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
- $daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return view('current_child_masters.create', compact('centers', 'classes', 'fees', 'allChildren','daysOfWeek'));
-}
 
     public function store(Request $r)
     {
+
 
         $data = $r->validate([
             'child_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -319,7 +320,7 @@ public function create()
             'parent_email' => 'required|email|max:150',
             'parent_mobile' => 'required|digits_between:7,20',
             'institution_number' => 'required|max:200',
-             'other_institution' => 'nullable|string|max:200',
+            'other_institution' => 'nullable|string|max:200',
             'transit_number' => 'required|digits_between:3,20',
             'account_number' => 'required|max:50',
             'emergency_contact_name' => 'nullable|max:100',
@@ -328,19 +329,24 @@ public function create()
             'emergency_contact_name2' => 'nullable|max:100',
             'emergency_contact_number2' => 'nullable',
             'emergency_contact_relation2' => 'nullable|max:100',
-             'emergency_contact_name2' => 'nullable|max:100',
+            'emergency_contact_name2' => 'nullable|max:100',
             'emergency_contact_number2' => 'nullable',
             'emergency_contact_relation2' => 'nullable|max:100',
-             'emergency_contact_name3'=> 'nullable|max:100',
-            'emergency_contact_number3'=> 'nullable|max:100',
-            'emergency_contact_relation3'=> 'nullable|max:100',
+            'emergency_contact_name3' => 'nullable|max:100',
+            'emergency_contact_number3' => 'nullable|max:100',
+            'emergency_contact_relation3' => 'nullable|max:100',
             'admission_date' => 'required|date',
             'end_date' => 'nullable|date',
             'special_notes' => 'nullable|max:500',
             'registration_fees_paid' => 'nullable|numeric',
             'issibling' => 'required|boolean',
             'no_of_days' => 'array',
-            'sibling_child_id' => 'nullable|exists:current_child_masters,child_id',
+            // 'sibling_child_id' => 'nullable|exists:current_child_masters,child_id',
+            'sibling_details' => 'nullable|array',
+            'sibling_details.child_name' => 'nullable|string|max:255',
+            'sibling_details.parent_name' => 'nullable|string|max:255',
+            'sibling_details.center_name' => 'nullable|string|max:255',
+            'sibling_details.relation' => 'nullable|in:brother,sister',
             'custody_agreement' => 'nullable|file|mimes:pdf',
             'registration_docs.*' => 'nullable|file|mimes:pdf',
             'status' => 'nullable|in:0,1,2,3',
@@ -384,48 +390,71 @@ public function create()
             $data['child_picture'] = '/public/uploads/' . $filename;
         }
 
-        if ($r->input('issibling') == 1 && $r->filled('sibling_child_id')) {
-            $data['sibling_child_id'] = $r->input('sibling_child_id');
+        // if ($r->input('issibling') == 1 && $r->filled('sibling_child_id')) {
+        //     $data['sibling_child_id'] = $r->input('sibling_child_id');
+        // } else {
+        //     $data['sibling_child_id'] = null;
+        // }
+
+
+
+
+        if ($r->boolean('issibling')) {
+            $data['sibling_details'] = $r->input('sibling_details'); // already array
         } else {
-            $data['sibling_child_id'] = null;
+            $data['sibling_details'] = null;
         }
 
 
-if ($data['institution_number'] === 'Other') {
-    if (empty($data['other_institution'])) {
-        return back()->withErrors(['other_institution' => 'Please specify the institution name.'])->withInput();
-    }
-    $data['institution_number'] = $data['other_institution'];
-} else {
-    $data['institution_number'] = $data['institution_number'];
-}
+
+
+        // if ($data['institution_number'] === 'Other') {
+//     if (empty($data['other_institution'])) {
+//         return back()->withErrors(['other_institution' => 'Please specify the institution name.'])->withInput();
+//     }
+//     $data['institution_number'] = $data['other_institution'];
+// } else {
+//     $data['institution_number'] = $data['institution_number'];
+// }
+
+
+        //updated
+
+        if ($data['institution_number'] === 'Other') {
+            if (empty($data['other_institution'])) {
+                return back()->withErrors([
+                    'other_institution' => 'Please specify the institution name.'
+                ])->withInput();
+            }
+            $data['institution_number'] = $data['other_institution'];
+        }
 
 
 
-            //no of days 
-            
-//  $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
- $daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    $selectedDays = $r->input('no_of_days', []);
+        //no of days 
 
-    $data['no_of_days'] = json_encode(
-        collect($daysOfWeek)->mapWithKeys(fn($day) => [$day => in_array($day, $selectedDays) ? 1 : 0])
-    );  
-    
-    $data['status'] = $data['status'] ?? 0; 
-    
+        //  $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        $daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        $selectedDays = $r->input('no_of_days', []);
+
+        $data['no_of_days'] = json_encode(
+            collect($daysOfWeek)->mapWithKeys(fn($day) => [$day => in_array($day, $selectedDays) ? 1 : 0])
+        );
+
+        $data['status'] = $data['status'] ?? 0;
+
         if ($data['status'] == 2) {
             // If Withdrawal, capture additional fields
             $data['withdrawal_date'] = $r->withdrawal_date;
-             $data['withdrawal_requeste_date'] = $r->withdrawal_requeste_date;
+            $data['withdrawal_requeste_date'] = $r->withdrawal_requeste_date;
             $data['withdrawal_note'] = $r->withdrawal_note;
         } else {
             // Reset withdrawal fields if not selected
             $data['withdrawal_date'] = null;
-             $data['withdrawal_requeste_date'] = null;
+            $data['withdrawal_requeste_date'] = null;
             $data['withdrawal_note'] = null;
         }
-        
+
         //chidl creating enaikl notifications 
         //  $admins = UserManagements::where('user_type', 'Admin')
         //         ->where(function ($query) use ($child) {
@@ -435,25 +464,25 @@ if ($data['institution_number'] === 'Other') {
         //         ->get();
         //  Log::info('This is an informational message.created child');                  
         //  Notification::send($admins, new ChildStatusChanged($child, 'created'));
-        
+
         // CurrentChildMaster::create();
-           
-           
-           // 2. Create child
-    $child = CurrentChildMaster::create($data);
 
-    // 3. Get admins (or whomever you want to notify)
-     $admins = UserManagements::where('user_type', 'Admin')
-                ->where(function ($query) use ($child) {
-                    $query->where('center_id', $child->center_id)
-                          ->orWhere('center_id', 0);
-                })
-                ->get();
 
-    // 4. Send Notification (stores in DB + sends Email)
-    Notification::send($admins, new ChildStatusChanged($child, 'created'));
+        // 2. Create child
+        $child = CurrentChildMaster::create($data);
 
-         
+        // 3. Get admins (or whomever you want to notify)
+        $admins = UserManagements::where('user_type', 'Admin')
+            ->where(function ($query) use ($child) {
+                $query->where('center_id', $child->center_id)
+                    ->orWhere('center_id', 0);
+            })
+            ->get();
+
+        // 4. Send Notification (stores in DB + sends Email)
+        Notification::send($admins, new ChildStatusChanged($child, 'created'));
+
+
         return redirect()->route('current-child-masters.index')
             ->with('success', 'Child and fee record created successfully!');
     }
@@ -464,23 +493,23 @@ if ($data['institution_number'] === 'Other') {
         return view('current_child_masters.show', compact('child'));
     }
 
-//amberg & Admin 
+    //amberg & Admin 
 
 
-// public function show(string $id)
+    // public function show(string $id)
 // {
 //     $user = session('user');
 //     // dd(session('user'), $id);
 
-//     $child = CurrentChildMaster::with(['center', 'class', 'fee'])->findOrFail($id);
+    //     $child = CurrentChildMaster::with(['center', 'class', 'fee'])->findOrFail($id);
 
-//     // If user is not Admin, restrict access by center
+    //     // If user is not Admin, restrict access by center
 //     if ($user->user_type !== 'Admin' && $child->center_id != $user->center_id) {
 //     abort(403, 'Unauthorized');
 // }
 
 
-//     return view('current_child_masters.show', compact('child'));
+    //     return view('current_child_masters.show', compact('child'));
 // }
 
     //updaate 16 today now
@@ -491,44 +520,44 @@ if ($data['institution_number'] === 'Other') {
     //     $classes = ClassMaster::all();
     //     $fees = CurrentFeesMaster::all();
     //     $allChildren = CurrentChildMaster::where('child_id', '!=', $id)->get(); // exclude self
-    
+
     //     return view('current_child_masters.edit', compact('child', 'centers', 'classes', 'fees', 'allChildren',));
     // }
 
-//magnger & admin 
+    //magnger & admin 
 
 
-public function edit($id)
-{
-    $user = session('user');
-    $child = CurrentChildMaster::findOrFail($id);
+    public function edit($id)
+    {
+        $user = session('user');
+        $child = CurrentChildMaster::findOrFail($id);
 
-    // Restrict access if user is Manager and doesn't belong to this center
-    if ($user->user_type === 'Manager' && $child->center_id != $user->center_id) {
-        return redirect()->back()->with('error', 'Access denied.');
+        // Restrict access if user is Manager and doesn't belong to this center
+        if ($user->user_type === 'Manager' && $child->center_id != $user->center_id) {
+            return redirect()->back()->with('error', 'Access denied.');
+        }
+
+        if ($user->user_type === 'Manager') {
+            $centers = CenterManagements::where('center_id', $user->center_id)->get();
+            $classes = ClassMaster::where('center_id', $user->center_id)->get();
+            $fees = CurrentFeesMaster::where('center_id', $user->center_id)->get();
+            $allChildren = CurrentChildMaster::where('center_id', $user->center_id)
+                ->where('child_id', '!=', $id)->get();
+        } else {
+            $centers = CenterManagements::all();
+            $classes = ClassMaster::all();
+            $fees = CurrentFeesMaster::all();
+            $allChildren = CurrentChildMaster::where('child_id', '!=', $id)->get();
+        }
+
+        //  $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        $daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        $selectedDays = collect(json_decode($child->no_of_days, true))
+            ->filter(fn($v) => $v == 1)
+            ->keys()
+            ->toArray();
+        return view('current_child_masters.edit', compact('child', 'centers', 'classes', 'fees', 'allChildren', 'daysOfWeek', 'selectedDays'));
     }
-
-    if ($user->user_type === 'Manager') {
-        $centers = CenterManagements::where('center_id', $user->center_id)->get();
-        $classes = ClassMaster::where('center_id', $user->center_id)->get();
-        $fees = CurrentFeesMaster::where('center_id', $user->center_id)->get();
-        $allChildren = CurrentChildMaster::where('center_id', $user->center_id)
-                            ->where('child_id', '!=', $id)->get();
-    } else {
-        $centers = CenterManagements::all();
-        $classes = ClassMaster::all();
-        $fees = CurrentFeesMaster::all();
-        $allChildren = CurrentChildMaster::where('child_id', '!=', $id)->get();
-    }
-
-//  $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
- $daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    $selectedDays = collect(json_decode($child->no_of_days, true))
-        ->filter(fn($v) => $v == 1)
-        ->keys()
-        ->toArray();
-    return view('current_child_masters.edit', compact('child', 'centers', 'classes', 'fees', 'allChildren','daysOfWeek', 'selectedDays'));
-}
 
     public function update(Request $r, $id)
     {
@@ -544,7 +573,7 @@ public function edit($id)
             'parent_email' => 'nullable|email|max:150',
             'parent_mobile' => 'nullable|digits_between:7,20',
             'institution_number' => 'max:200',
-             'other_institution' => 'nullable|string|max:200',
+            'other_institution' => 'nullable|string|max:200',
             'transit_number' => 'nullable',
             'account_number' => 'max:50',
             'emergency_contact_name' => 'nullable|max:100',
@@ -553,9 +582,9 @@ public function edit($id)
             'emergency_contact_name2' => 'nullable|max:100',
             'emergency_contact_number2' => 'nullable|digits_between:7,20',
             'emergency_contact_relation2' => 'nullable|max:100',
-            'emergency_contact_name3'=> 'nullable|max:100',
-            'emergency_contact_number3'=> 'nullable|max:100',
-            'emergency_contact_relation3'=> 'nullable|max:100',
+            'emergency_contact_name3' => 'nullable|max:100',
+            'emergency_contact_number3' => 'nullable|max:100',
+            'emergency_contact_relation3' => 'nullable|max:100',
             'admission_date' => 'required',
             'no_of_days' => 'array',
             'end_date' => 'nullable|date',
@@ -564,7 +593,13 @@ public function edit($id)
             /*  'issibling' => 'required|boolean','sibling_child_id' => 'nullable|exists:current_child_masters,child_id',
              files */
             'issibling' => 'required|boolean',
-            'sibling_child_id' => 'nullable|exists:current_child_masters,child_id',
+            // 'sibling_child_id' => 'nullable|exists:current_child_masters,child_id',
+            'sibling_details' => 'nullable|array',
+            'sibling_details.child_name' => 'nullable|string|max:255',
+            'sibling_details.parent_name' => 'nullable|string|max:255',
+            'sibling_details.center_name' => 'nullable|string|max:255',
+            'sibling_details.relation' => 'nullable|in:brother,sister',
+
             //       'has_custody_agreement'  => 'required|boolean',
             // 'custody_agreement'      => 'nullable|file|mimes:pdf',
             'status' => 'nullable|in:0,1,2,3',
@@ -598,29 +633,42 @@ public function edit($id)
             $data['other_file_doc'] = json_encode(array_merge($existing, $uploaded));
         }
         //no of day
-        
+
         //insitiden 
-        
+
+        //         if ($r->input('institution_number') === 'Other') {
+//     if (empty($r->input('other_institution'))) {
+//         return back()->withErrors(['other_institution' => 'Please specify the institution name.'])->withInput();
+//     }
+//     $finalInstitution = $r->input('other_institution');
+// } else {
+//     $finalInstitution = $r->input('institution_number');
+// }
+
+        // // Assign to data array before updating
+// $data['institution_number'] = $finalInstitution;
+
+
+
         if ($r->input('institution_number') === 'Other') {
-    if (empty($r->input('other_institution'))) {
-        return back()->withErrors(['other_institution' => 'Please specify the institution name.'])->withInput();
-    }
-    $finalInstitution = $r->input('other_institution');
-} else {
-    $finalInstitution = $r->input('institution_number');
-}
+            if (empty($r->input('other_institution'))) {
+                return back()->withErrors([
+                    'other_institution' => 'Please specify the institution name.'
+                ])->withInput();
+            }
+            $finalInstitution = $r->input('other_institution');
+        } else {
+            $finalInstitution = $r->input('institution_number');
+        }
 
-// Assign to data array before updating
-$data['institution_number'] = $finalInstitution;
+        $data['institution_number'] = $finalInstitution;
+        //  $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        $daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        $selectedDays = $r->input('no_of_days', []);
 
-
-//  $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
- $daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    $selectedDays = $r->input('no_of_days', []);
-
-    $data['no_of_days'] = json_encode(
-        collect($daysOfWeek)->mapWithKeys(fn($day) => [$day => in_array($day, $selectedDays) ? 1 : 0])
-    );
+        $data['no_of_days'] = json_encode(
+            collect($daysOfWeek)->mapWithKeys(fn($day) => [$day => in_array($day, $selectedDays) ? 1 : 0])
+        );
 
         // 2. Custody Agreement – replace old if new uploaded
         if ($r->hasFile('custody_agreement')) {
@@ -651,57 +699,76 @@ $data['institution_number'] = $finalInstitution;
         unset($data['health_card_file'], $data['health_card_text']);
 
         // Sibling logic
-        $data['sibling_child_id'] = ($r->input('issibling') == 1 && $r->filled('sibling_child_id'))
-            ? $r->input('sibling_child_id')
-            : null;
+        // $data['sibling_child_id'] = ($r->input('issibling') == 1 && $r->filled('sibling_child_id'))
+        //     ? $r->input('sibling_child_id')
+        //     : null;
 
-       if (!empty($data['status']) && $data['status'] == 2) {
+
+
+        //    if ($r->input('issibling') == 1) {
+//     $data['sibling_details'] = json_encode([
+//         'child_name'   => $r->input('sibling_child_name'),
+//         'parent_name'  => $r->input('sibling_parent_name'),
+//         'center_name'  => $r->input('sibling_center_name'),
+//         'relation'     => $r->input('sibling_relation'),
+//     ]);
+// } else {
+//     $data['sibling_details'] = null;
+// }
+
+        if ($r->boolean('issibling')) {
+            $data['sibling_details'] = $r->input('sibling_details'); // already array
+        } else {
+            $data['sibling_details'] = null;
+        }
+
+        if (!empty($data['status']) && $data['status'] == 2) {
             $data['withdrawal_date'] = $r->withdrawal_date;
             $data['withdrawal_requeste_date'] = $r->withdrawal_requeste_date;
             $data['withdrawal_note'] = $r->withdrawal_note;
-            
+
         } else {
             $data['withdrawal_date'] = null;
             $data['withdrawal_requeste_date'] = null;
             $data['withdrawal_note'] = null;
         }
 
-        
-        
-// Profile picture upload
-if ($r->hasFile('child_picture')) {
-    // Remove old picture if exists
-    if ($child->child_picture && file_exists(public_path($child->child_picture))) {
-        unlink(public_path($child->child_picture));
-    }
-
-    $file = $r->file('child_picture');
-    $filename = time() . '_profile_' . $file->getClientOriginalName();
-    $file->move(public_path('uploads'), $filename);
-
-    $data['child_picture'] = '/public/uploads/' . $filename;
 
 
-}
+        // Profile picture upload
+        if ($r->hasFile('child_picture')) {
+            // Remove old picture if exists
+            if ($child->child_picture && file_exists(public_path($child->child_picture))) {
+                unlink(public_path($child->child_picture));
+            }
+
+            $file = $r->file('child_picture');
+            $filename = time() . '_profile_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $filename);
+
+            $data['child_picture'] = '/public/uploads/' . $filename;
+
+
+        }
         $child = CurrentChildMaster::findOrFail($id);
 
 
 
-  if ($r->input('action') === 'approve') {
-        $data['status'] = 1; // Active
-    } elseif ($r->input('action') === 'withdraw') {
-        $data['status'] = 2; // Withdrawal
-        $data['withdrawal_date'] = $r->input('withdrawal_date');
-        $data['withdrawal_requeste_date'] =  $r->input('withdrawal_requeste_date');
-        $data['withdrawal_note'] = $r->input('withdrawal_note');
-    }
+        if ($r->input('action') === 'approve') {
+            $data['status'] = 1; // Active
+        } elseif ($r->input('action') === 'withdraw') {
+            $data['status'] = 2; // Withdrawal
+            $data['withdrawal_date'] = $r->input('withdrawal_date');
+            $data['withdrawal_requeste_date'] = $r->input('withdrawal_requeste_date');
+            $data['withdrawal_note'] = $r->input('withdrawal_note');
+        }
 
-    // Reset withdrawal fields if not withdrawing
-    if (!isset($data['status']) || $data['status'] != 2) {
-        $data['withdrawal_date'] = null;
-         $data['withdrawal_date'] = null;
-        $data['withdrawal_requeste_date'] = null;
-    }
+        // Reset withdrawal fields if not withdrawing
+        if (!isset($data['status']) || $data['status'] != 2) {
+            $data['withdrawal_date'] = null;
+            $data['withdrawal_date'] = null;
+            $data['withdrawal_requeste_date'] = null;
+        }
 
 
         /* -------- PERSIST -------- */
@@ -727,32 +794,32 @@ if ($r->hasFile('child_picture')) {
         //                 //   dd($admins);
         //         Notification::send($admins, new ChildStatusChanged($child, 'withdrawn'));
         //     }
-            
-    //new update 18-08-2024
-    
-    
-                        //child approve & withdrawn notification
-            if (isset($data['status'])) {
-                if ($data['status'] == 1) {
-                    Log::info('Child approved - sending notification');
-                    $admins = UserManagements::where('user_type', 'Admin')
-                              ->where('center_id', $child->center_id)
-                              ->get();
-            
-                    Notification::send($admins, new ChildStatusChanged($child, 'approved'));
-            
-                } elseif ($data['status'] == 2) {
-                    Log::info('Child withdrawn - sending notification');
-                    $admins = UserManagements::where('user_type', 'Admin')
-                        ->where(function ($query) use ($child) {
-                            $query->where('center_id', $child->center_id)
-                                  ->orWhere('center_id', 0);
-                        })
-                        ->get();
-            
-                    Notification::send($admins, new ChildStatusChanged($child, 'withdrawn'));
-                }
+
+        //new update 18-08-2024
+
+
+        //child approve & withdrawn notification
+        if (isset($data['status'])) {
+            if ($data['status'] == 1) {
+                Log::info('Child approved - sending notification');
+                $admins = UserManagements::where('user_type', 'Admin')
+                    ->where('center_id', $child->center_id)
+                    ->get();
+
+                Notification::send($admins, new ChildStatusChanged($child, 'approved'));
+
+            } elseif ($data['status'] == 2) {
+                Log::info('Child withdrawn - sending notification');
+                $admins = UserManagements::where('user_type', 'Admin')
+                    ->where(function ($query) use ($child) {
+                        $query->where('center_id', $child->center_id)
+                            ->orWhere('center_id', 0);
+                    })
+                    ->get();
+
+                Notification::send($admins, new ChildStatusChanged($child, 'withdrawn'));
             }
+        }
 
 
 
@@ -772,43 +839,43 @@ if ($r->hasFile('child_picture')) {
             ->with('success', 'Child deleted successfully.');
     }
 
-//amdin & manerg 
+    //amdin & manerg 
 
 
 
-// public function destroy($id)
+    // public function destroy($id)
 // {
 //     $user = session('user');
 //     $child = CurrentChildMaster::findOrFail($id);
 
-//     if ($user->user_type === 'Manager' && $child->center_id != $user->center_id) {
+    //     if ($user->user_type === 'Manager' && $child->center_id != $user->center_id) {
 //         return redirect()->back()->with('error', 'Unauthorized delete access.');
 //     }
 
-//     $child->delete();
+    //     $child->delete();
 //     return redirect()->back()->with('success', 'Child deleted successfully.');
 // }
 
     public function approve($id)
     {
-    
-            $child = CurrentChildMaster::with('center')->findOrFail($id);
-            $admins = UserManagements::where('user_type', 'Admin')
-                ->where(function ($query) use ($child) {
-                    $query->where('center_id', $child->center_id)
-                          ->orWhere('center_id', 0);
-                })
-                ->get();
-            
-            // dd($admins);
-            
-            if ($child->status == 0) {
-                $child->status = 1;
-                $child->save();
-                Notification::send($admins, new ChildStatusChanged($child, 'approved'));
-            }
-    
-    
+
+        $child = CurrentChildMaster::with('center')->findOrFail($id);
+        $admins = UserManagements::where('user_type', 'Admin')
+            ->where(function ($query) use ($child) {
+                $query->where('center_id', $child->center_id)
+                    ->orWhere('center_id', 0);
+            })
+            ->get();
+
+        // dd($admins);
+
+        if ($child->status == 0) {
+            $child->status = 1;
+            $child->save();
+            Notification::send($admins, new ChildStatusChanged($child, 'approved'));
+        }
+
+
         return redirect()->back()->with('success', 'Child approved successfully.');
     }
 
@@ -839,40 +906,40 @@ if ($r->hasFile('child_picture')) {
 
         return response()->json($days);
     }
-    
-    public function showChildren($class_id)
-{
-    $class = ClassMaster::with(['children'])->findOrFail($class_id);
 
-    return view('class_masters.class_children', compact('class'));
-}
+    public function showChildren($class_id)
+    {
+        $class = ClassMaster::with(['children'])->findOrFail($class_id);
+
+        return view('class_masters.class_children', compact('class'));
+    }
 
 
     public function getFeesByCenters(Request $request)
-{
-    $centerId = $request->center_id;
-
-    
-    $fees = CurrentFeesMaster::where('center_id', $centerId)->get();
-
-    return response()->json(['fees' => $fees]);
-}
+    {
+        $centerId = $request->center_id;
 
 
+        $fees = CurrentFeesMaster::where('center_id', $centerId)->get();
 
-public function getClassesByCenter($centerId)
-{
-    $classes = ClassMaster::where('center_id', $centerId)->get();
-    return response()->json($classes);
-}
+        return response()->json(['fees' => $fees]);
+    }
 
-public function getFeesByCenterAndClass($centerId, $classId)
-{
-    $fees = CurrentFeesMaster::where('center_id', $centerId)
-        ->where('class_id', $classId)
-        ->get();
-    return response()->json($fees);
-}
+
+
+    public function getClassesByCenter($centerId)
+    {
+        $classes = ClassMaster::where('center_id', $centerId)->get();
+        return response()->json($classes);
+    }
+
+    public function getFeesByCenterAndClass($centerId, $classId)
+    {
+        $fees = CurrentFeesMaster::where('center_id', $centerId)
+            ->where('class_id', $classId)
+            ->get();
+        return response()->json($fees);
+    }
 
 
 }

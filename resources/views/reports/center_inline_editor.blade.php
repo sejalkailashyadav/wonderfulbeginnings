@@ -98,7 +98,7 @@
             </form>
         </div>
     </div>
-
+@php $user = session('user'); @endphp
     <!-- SUCCESS ALERT -->
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -162,9 +162,16 @@
                                <td>{{ $report->transit_number?? 'N/A' }}</td>
                                <td>{{ $report->account_number?? 'N/A' }}</td>
                                 <td>${{ number_format($report->monthly_fee - ($report->ccfri + ($report->accb ?? 0)), 2) }}</td>
+                             
                                 <td>
-                                    <input type="text" name="reports[{{ $report->id }}][notes]" value="{{ $report->notes }}" class="form-control">
-                                </td>
+    <input type="text" 
+           name="reports[{{ $report->id }}][notes]" 
+           value="{{ $user->user_type === 'Admin' ? ($report->notes['admin'] ?? '') : ($report->notes['manager'] ?? '') }}" 
+           class="form-control" 
+           placeholder="Enter notes (optional)">
+</td>
+
+
                             </tr>
                             @endforeach
                         </tbody>

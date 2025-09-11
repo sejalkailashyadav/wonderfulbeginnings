@@ -185,25 +185,7 @@
             </div>
 
             <!-- Sibling -->
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Is Sibling?<span class="text-danger">*</span></label>
-                <select name="issibling" id="issibling" class="form-control">
-                    <option value="0" {{ old('issibling', $child->issibling) == 0 ? 'selected' : '' }}>No</option>
-                    <option value="1" {{ old('issibling', $child->issibling) == 1 ? 'selected' : '' }}>Yes</option>
-                </select>
-            </div>
-
-            <div class="col-md-6 mb-3" id="sibling_select" style="display: none;">
-                <label class="form-label">Select Sibling</label>
-                <select name="sibling_child_id" class="form-control">
-                    <option value="">-- Select --</option>
-                    @foreach($allChildren as $sibling)
-                        <option value="{{ $sibling->child_id }}" {{ old('sibling_child_id', $child->sibling_child_id) == $sibling->child_id ? 'selected' : '' }}>
-                            {{ $sibling->child_first_name }} {{ $sibling->child_last_name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            
         </div>
         
 <!-- EMERGENCY CONTACT DETAILS -->
@@ -270,7 +252,54 @@
                placeholder="Enter relationship">
     </div>
 </div>
+<div class="col-md-6 mb-3">
+    <label class="form-label">Is Sibling? <span class="text-danger">*</span></label>
+    <select name="issibling" id="issibling" class="form-control">
+        <option value="0" {{ old('issibling', $child->issibling ?? 0) == 0 ? 'selected' : '' }}>No</option>
+        <option value="1" {{ old('issibling', $child->issibling ?? 0) == 1 ? 'selected' : '' }}>Yes</option>
+    </select>
+</div>
 
+{{-- Sibling Details Block --}}
+<div class="col-md-12 mb-3" id="sibling_block" style="display:none;">
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Sibling Child Name</label>
+            <input type="text" name="sibling_details[child_name]"
+                value="{{ old('sibling_details.child_name', $child->sibling_details['child_name'] ?? '') }}"
+                class="form-control">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Sibling Parent Name</label>
+            <input type="text" name="sibling_details[parent_name]"
+                value="{{ old('sibling_details.parent_name', $child->sibling_details['parent_name'] ?? '') }}"
+                class="form-control">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Sibling Center Name</label>
+            <input type="text" name="sibling_details[center_name]"
+                value="{{ old('sibling_details.center_name', $child->sibling_details['center_name'] ?? '') }}"
+                class="form-control">
+        </div>
+
+        <div class="col-md-12 mb-3">
+            <label class="form-label">Relation</label><br>
+            <label>
+                <input type="radio" name="sibling_details[relation]" value="brother"
+                    {{ old('sibling_details.relation', $child->sibling_details['relation'] ?? '') == 'brother' ? 'checked' : '' }}>
+                Brother
+            </label>
+            &nbsp;&nbsp;
+            <label>
+                <input type="radio" name="sibling_details[relation]" value="sister"
+                    {{ old('sibling_details.relation', $child->sibling_details['relation'] ?? '') == 'sister' ? 'checked' : '' }}>
+                Sister
+            </label>
+        </div>
+    </div>
+</div>
 <!-- CHILD ADMISSION DETAILS -->
 <h3 class="card-title text-primary border-bottom pb-3 pt-3">Child Admission Details</h3>
 <div class="row mt-3">
@@ -418,22 +447,37 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const issibling = document.getElementById('issibling');
-            const siblingSelect = document.getElementById('sibling_select');
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     const issibling = document.getElementById('issibling');
+        //     const siblingSelect = document.getElementById('sibling_select');
 
-            function toggleSiblingSelect() {
-                if (issibling.value == '1') {
-                    siblingSelect.style.display = 'block';
-                } else {
-                    siblingSelect.style.display = 'none';
-                }
-            }
+        //     function toggleSiblingSelect() {
+        //         if (issibling.value == '1') {
+        //             siblingSelect.style.display = 'block';
+        //         } else {
+        //             siblingSelect.style.display = 'none';
+        //         }
+        //     }
 
-            issibling.addEventListener('change', toggleSiblingSelect);
-            toggleSiblingSelect();
-        });
+        //     issibling.addEventListener('change', toggleSiblingSelect);
+        //     toggleSiblingSelect();
+        // });
         
+         document.addEventListener('DOMContentLoaded', function () {
+        const issibling = document.getElementById('issibling');
+        const siblingBlock = document.getElementById('sibling_block');
+
+        function toggleSiblingBlock() {
+            if (issibling.value == '1') {
+                siblingBlock.style.display = 'block';
+            } else {
+                siblingBlock.style.display = 'none';
+            }
+        }
+
+        issibling.addEventListener('change', toggleSiblingBlock);
+        toggleSiblingBlock(); // Run on page load
+    });
           function toggleWithdrawalFields(value) {
         const section = document.getElementById('withdrawal-fields');
         section.style.display = (value == 2) ? 'block' : 'none';

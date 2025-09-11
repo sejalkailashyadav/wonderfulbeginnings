@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -129,19 +130,6 @@
                                         @endforeach
                                     </div>
                                 </div>
-
-
-                                <!--<div class="col-12">-->
-                                <!--    <label class="form-label">Days of Attendance</label><br>-->
-                                <!--    <div class="ps-3">-->
-                                <!--        @foreach($daysOfWeek as $day)-->
-                                <!--            <label class="me-3">-->
-                                <!--                <input type="checkbox" name="no_of_days[]" value="{{ $day }}" {{ in_array($day, $selectedDays ?? []) ? 'checked' : '' }}>-->
-                                <!--                {{ $day }}-->
-                                <!--            </label>-->
-                                <!--        @endforeach-->
-                                <!--    </div>-->
-                                <!--</div>-->
                             </div>
 
                             <!-- ================== PARENT DETAILS ================== -->
@@ -169,23 +157,6 @@
                                         value="{{ old('parent_email') }}" placeholder="Enter parent email">
                                 </div>
 
-                                <!-- <div class="col-md-6">
-                    <label class="form-label">Custody Agreement? <span class="text-danger">*</span></label>
-                    <select name="has_custody_agreement" id="has_custody_agreement" class="form-control">
-                        <option value="0" {{ old('has_custody_agreement', isset($child) && $child->custody_agreement ? 1 : 0) == 0 ? 'selected' : '' }}>No</option>
-                        <option value="1" {{ old('has_custody_agreement', isset($child) && $child->custody_agreement ? 1 : 0) == 1 ? 'selected' : '' }}>Yes</option>
-                    </select>
-                </div>
-                <div class="col-md-6" id="custody_upload" style="display:none;">
-                    <label class="form-label">Upload Custody Agreement (PDF) <span class="text-danger">*</span></label>
-                    <input type="file" name="custody_agreement" accept="application/pdf" class="form-control">
-                @if(isset($child) && $child->custody_agreement)
-                    <small class="text-muted">
-                        Current file: <a href="{{ asset('storage/'.$child->custody_agreement) }}" target="_blank">View PDF</a>
-                    </small>
-                @endif
-            </div> -->
-
                                 <div class="col-md-6">
                                     <label class="form-label">Custody Agreement? <span class="text-danger">*</span></label>
                                     <select name="has_custody_agreement" id="has_custody_agreement" class="form-control">
@@ -209,26 +180,54 @@
                                     @endif
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label class="form-label">Is Sibling? <span class="text-danger">*</span></label>
-                                    <select name="issibling" id="issibling" class="form-control">
-                                        <option value="0" {{ old('issibling', $child->issibling ?? 0) == 0 ? 'selected' : '' }}>No</option>
-                                        <option value="1" {{ old('issibling', $child->issibling ?? 0) == 1 ? 'selected' : '' }}>Yes</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6" id="sibling_select" style="display:none;">
-                                    <label class="form-label">Select Sibling</label>
-                                    <select name="sibling_child_id" class="form-control">
-                                        <option value="">-- Select --</option>
-                                        @foreach($allChildren as $sibling)
-                                            @if(empty($child) || $child->child_id != $sibling->child_id)
-                                                <option value="{{ $sibling->child_id }}" {{ old('sibling_child_id', $child->sibling_child_id ?? '') == $sibling->child_id ? 'selected' : '' }}>
-                                                    {{ $sibling->child_first_name }} {{ $sibling->child_last_name }}
-                                                </option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
+<div class="col-md-6 mb-3">
+    <label class="form-label">Is Sibling? <span class="text-danger">*</span></label>
+    <select name="issibling" id="issibling" class="form-control">
+        <option value="0" {{ old('issibling', $child->issibling ?? 0) == 0 ? 'selected' : '' }}>No</option>
+        <option value="1" {{ old('issibling', $child->issibling ?? 0) == 1 ? 'selected' : '' }}>Yes</option>
+    </select>
+</div>
+<div class="col-md-12 mb-3" id="sibling_block" style="display:none;">
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Sibling Child Name</label>
+            <input type="text" name="sibling_details[child_name]"
+                   value="{{ old('sibling_details.child_name', $child->sibling_details['child_name'] ?? '') }}"
+                   class="form-control">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Sibling Parent Name</label>
+            <input type="text" name="sibling_details[parent_name]"
+                   value="{{ old('sibling_details.parent_name', $child->sibling_details['parent_name'] ?? '') }}"
+                   class="form-control">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Sibling Center Name</label>
+            <input type="text" name="sibling_details[center_name]"
+                   value="{{ old('sibling_details.center_name', $child->sibling_details['center_name'] ?? '') }}"
+                   class="form-control">
+        </div>
+
+        <div class="col-md-12 mb-3">
+            <label class="form-label">Relation</label><br>
+            <label>
+                <input type="radio" name="sibling_details[relation]" value="brother"
+                       {{ old('sibling_details.relation', $child->sibling_details['relation'] ?? '') == 'brother' ? 'checked' : '' }}>
+                Brother
+            </label>
+            &nbsp;&nbsp;
+            <label>
+                <input type="radio" name="sibling_details[relation]" value="sister"
+                       {{ old('sibling_details.relation', $child->sibling_details['relation'] ?? '') == 'sister' ? 'checked' : '' }}>
+                Sister
+            </label>
+        </div>
+    </div>
+</div>
+
+
                             </div>
 
                             <!-- ================== EMERGENCY CONTACTS ================== -->
@@ -351,7 +350,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-4">
+                                <!-- <div class="col-md-4">
                                     <label class="form-label">Institution Number<span class="text-danger">*</span></label>
                                     <select name="institution_number" id="institution_number" class="form-select"
                                         onchange="toggleOtherInstitution()">
@@ -381,9 +380,42 @@
                                     <input type="text" name="other_institution" id="other_institution"
                                         value="{{ old('other_institution') }}" class="form-control"
                                         placeholder="Enter institution name">
-                                </div>
+                                </div> -->
+                           
+                            <!-- new insi dat a -->
+                            
+							<div class="col-md-4">
+							    <label class="form-label">Institution Number <span class="text-danger">*</span></label>
+							    <select name="institution_number" id="institution_number" class="form-select" onchange="toggleOtherInstitution()">
+							        <option value="">Select Institution</option>
+							        <option value="BMO" {{ old('institution_number') == 'BMO' ? 'selected' : '' }}>Bank of Montreal - 001</option>
+							        <option value="SB" {{ old('institution_number') == 'SB' ? 'selected' : '' }}>Scotiabank (002)</option>
+							        <option value="RBC" {{ old('institution_number') == 'RBC' ? 'selected' : '' }}>Royal Bank of Canada - 003</option>
+							        <option value="TD" {{ old('institution_number') == 'TD' ? 'selected' : '' }}>TD Bank - 004</option>
+							        <option value="NBC" {{ old('institution_number') == 'NBC' ? 'selected' : '' }}>National Bank - 006</option>
+							        <option value="CBC" {{ old('institution_number') == 'CBC' ? 'selected' : '' }}>CIBC - 010</option>
+							        <option value="Other" {{ old('institution_number') == 'Other' ? 'selected' : '' }}>Other</option>
+							    </select>
+							    @error('institution_number')
+							        <div class="invalid-feedback">{{ $message }}</div>
+							    @enderror
+							</div>
 
-                                <div class="col-md-4">
+							<!-- Show only when "Other" is selected -->
+							<div class="col-md-4" id="other_institution_div" style="display: none;">
+							    <label class="form-label">Other Institution Name <span class="text-danger">*</span></label>
+							    <input type="text" 
+							           name="other_institution" 
+							           id="other_institution"
+							           class="form-control"
+							           value="{{ old('other_institution') }}"
+							           placeholder="Enter institution name">
+							    @error('other_institution')
+							        <div class="invalid-feedback">{{ $message }}</div>
+							    @enderror
+							</div>
+  
+                            <div class="col-md-4">
                                     <label class="form-label">Bank Transit Number<span class="text-danger">*</span></label>
                                     <input type="text" name="transit_number" value="{{ old('transit_number') }}"
                                         class="form-control" placeholder="Enter transit number">
@@ -447,32 +479,19 @@
                     </div>
                     <script>
 
-                        document.addEventListener('DOMContentLoaded', function () {
-                            const issibling = document.getElementById('issibling');
-                            const siblingSelect = document.getElementById('sibling_select');
 
-                            function toggleSiblingSelect() {
-                                if (issibling.value == '1') {
-                                    siblingSelect.style.display = 'block';
-                                } else {
-                                    siblingSelect.style.display = 'none';
-                                }
-                            }
+					   document.addEventListener('DOMContentLoaded', function () {
+					    const issibling = document.getElementById('issibling');
+					    const siblingBlock = document.getElementById('sibling_block');
 
-                            issibling.addEventListener('change', toggleSiblingSelect);
-                            toggleSiblingSelect(); // run on load
-                        });
+					    function toggleSiblingBlock() {
+					        siblingBlock.style.display = (issibling.value == '1') ? 'block' : 'none';
+					    }
 
-                        // document.addEventListener('DOMContentLoaded', () => {
-                        //     const sel  = document.getElementById('has_custody_agreement');
-                        //     const box  = document.getElementById('custody_upload');
-                        //     const show = () => box.style.display = sel.value === '1' ? 'block' : 'none';
-                        //     sel.addEventListener('change', show);
-                        //     show();              // run once on page load
-                        // });
+					    toggleSiblingBlock(); // Run on page load
+					    issibling.addEventListener('change', toggleSiblingBlock);
+					});
 
-
-                        //now  updated one with old values  #
 
                         document.addEventListener('DOMContentLoaded', () => {
                             // Generic show/hide handler
@@ -500,59 +519,6 @@
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
                     <script>
-                        // document.addEventListener('DOMContentLoaded', function () {
-                        //     const centerDropdown = document.getElementById('center_id');
-                        //     const classDropdown = document.getElementById('class_id');
-                        //     const feeDropdown = document.getElementById('fees_id');
-
-                        //     // Handle center selection
-                        //     centerDropdown.addEventListener('change', function () {
-                        //         const centerId = this.value;
-
-                        //         // Reset class and fees dropdowns
-                        //         classDropdown.innerHTML = '<option value="">Select Class</option>';
-                        //         feeDropdown.innerHTML = '<option value="">Select Fee</option>';
-
-                        //         if (centerId) {
-                        //             fetch(`/get-classes-by-center/${centerId}`)
-                        //                 .then(res => res.json())
-                        //                 .then(classes => {
-                        //                     classes.forEach(cls => {
-                        //                         const option = document.createElement('option');
-                        //                         option.value = cls.class_id;
-                        //                         option.textContent = cls.class_name;
-                        //                         classDropdown.appendChild(option);
-                        //                     });
-                        //                 })
-                        //                 .catch(err => console.error('Error fetching classes:', err));
-                        //         }
-                        //     });
-
-                        //     // Handle class selection
-                        //     classDropdown.addEventListener('change', function () {
-                        //         const classId = this.value;
-                        //         const centerId = centerDropdown.value;
-
-                        //         // Reset fees dropdown
-                        //         feeDropdown.innerHTML = '<option value="">Select Fee</option>';
-
-                        //         if (centerId && classId) {
-                        //             fetch(`/get-fees-by-center-and-class/${centerId}/${classId}`)
-                        //                 .then(res => res.json())
-                        //                 .then(fees => {
-                        //                     fees.forEach(fee => {
-                        //                         const option = document.createElement('option');
-                        //                         option.value = fee.id;
-                        //                         option.textContent = `${fee.fees_name}`;
-                        //                         feeDropdown.appendChild(option);
-                        //                     });
-                        //                 })
-                        //                 .catch(err => console.error('Error fetching fees:', err));
-                        //         }
-                        //     });
-                        // });
-
-
                         document.addEventListener('DOMContentLoaded', function () {
                             const centerDropdown = document.getElementById('center_id');
                             const classDropdown = document.getElementById('class_id');
@@ -628,20 +594,14 @@
                             }
                         });
 
-                        function toggleOtherInstitution() {
-                            const selectedValue = document.getElementById('institution_number').value;
-                            const otherInstitutionDiv = document.getElementById('other_institution_div');
-                            if (selectedValue === 'Other') {
-                                otherInstitutionDiv.style.display = 'block';
-                            } else {
-                                otherInstitutionDiv.style.display = 'none';
-                            }
-                        }
+					function toggleOtherInstitution() {
+					    const selectedValue = document.getElementById('institution_number').value;
+					    const otherInstitutionDiv = document.getElementById('other_institution_div');
+					    otherInstitutionDiv.style.display = (selectedValue === 'Other') ? 'block' : 'none';
+					}
 
-                        // To persist state after validation error
-                        document.addEventListener('DOMContentLoaded', function () {
-                            toggleOtherInstitution();
-                        });
+					// Run once on page load (preserve old values)
+					document.addEventListener('DOMContentLoaded', toggleOtherInstitution);
 
                         document.addEventListener('DOMContentLoaded', function () {
                             const maxDays = 7; // Change this to your allowed number

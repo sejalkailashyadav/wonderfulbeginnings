@@ -39,10 +39,10 @@
                             <th>Parent Name </th>
                             <th>Class </th>
                             <th>Fee Plan </th>
-                           
+                                      <th>Notes </th>
                              @php $user = session('user'); @endphp
             @if($user->user_type === 'Admin') 
-             <th>Notes </th>
+  
                             <th>Institution Number </th>
                             <th>Transit Number</th>
                             <th>Account Number </th>
@@ -94,11 +94,32 @@
                                         @endforeach
                                     </select>
                                 </td>
+
+
+
+
+<td>
+    @if($user->user_type === 'Admin')
+        <input type="text"
+               name="reports[{{ $index }}][notes]"
+               value="{{ $report->notes['admin'] ?? '' }}"
+               class="form-control"
+               placeholder="Enter admin notes" />
+    @elseif($user->user_type === 'Manager')
+        <input type="text"
+               name="reports[{{ $index }}][notes]"
+               value="{{ $report->notes['manager'] ?? '' }}"
+               class="form-control"
+               placeholder="Enter manager notes" />
+    @endif
+</td> 
+
+
+
+
 @if($user->user_type === 'Admin') 
                                 <!-- Notes -->
-                                <td>
-                                    <input type="text" name="reports[{{ $index }}][notes]" value="{{ $report->notes }}" class="form-control" placeholder="Enter notes (optional)" />
-                                </td>
+                               
 
  <td>
                                     <input type="text" name="reports[{{ $index }}][institution_number]" value="{{ $report->institution_number }}" class="form-control" placeholder="Enter institution_number (optional)" />

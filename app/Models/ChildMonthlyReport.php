@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 class ChildMonthlyReport extends Model
 {
     public $timestamps = false;
+    protected $casts = [
+        'notes' => 'array',
+    ];
 
     protected $fillable = [
         'child_id', 'center_id', 'class_id',
-        'month', 'monthly_fee', 'ccfri', 'accb' ,'total','status','notes','institution_number','transit_number','account_number'];
+        'month', 'monthly_fee', 'ccfri','notes', 'accb' ,'total','status','institution_number','transit_number','account_number'];
     
     public function child()
 {

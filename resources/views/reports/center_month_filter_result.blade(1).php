@@ -146,10 +146,20 @@
         @endforeach
     </select>
 </td>
-
 <td>
-    <input type="text" name="reports[{{ $index }}][notes]" value="{{ $report->notes }}" class="form-control" />
+    <input type="text"
+           name="reports[{{ $index }}][notes][admin]"
+           value="{{ $report->notes['admin'] ?? '' }}"
+           class="form-control mb-1"
+           placeholder="Admin notes" />
+
+    <input type="text"
+           name="reports[{{ $index }}][notes][manager]"
+           value="{{ $report->notes['manager'] ?? '' }}"
+           class="form-control"
+           placeholder="Manager notes" />
 </td>
+
 
                       <td>
                     

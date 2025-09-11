@@ -90,6 +90,7 @@
                                     @endif
                                 </a>
                             </th>
+                            <th>Notes</th>
                             @if($user->user_type === 'Admin')
                                 <th>Monthly Fee</th>
                                 <th>CCFRI</th>
@@ -98,7 +99,7 @@
                                   <th>Transit Number</th>
                                    <th>Account Number</th>
                                 <th>Total</th>
-                                 <th>Notes</th>
+                                 
                             @endif
                            
                         </tr>
@@ -127,6 +128,15 @@
                                 <td>{{ $report->child->parent_first_name ?? 'N/A' }} {{ $report->child->parent_last_name ?? 'N/A' }}</td>
                                 <td>{{ $report->child->class->class_name ?? 'N/A' }}</td>
                                 <td>{{ $report->child->fee->fees_name ?? 'N/A' }}</td>
+                               <td>
+                    @if($user->user_type === 'Admin')
+                        {{ $report->notes['admin'] ?? 'N/A' }}
+                    @elseif($user->user_type === 'Manager')
+                        {{ $report->notes['manager'] ?? 'N/A' }}
+                    @else
+                        N/A
+                    @endif
+                </td>
                                 @if($user->user_type === 'Admin')
                                     <td>${{ number_format($report->monthly_fee, 2) }}</td>
                                     <td>${{ number_format($report->ccfri, 2) }}</td>
@@ -137,7 +147,7 @@
                                       <td>{{ $report->transit_number }}</td>
                                        <td>{{ $report->account_number }}</td>
                                     <td>${{ number_format($report->total, 2) }}</td>
-                                    <td>{{ $report->notes ?? 'N/A' }}</td>
+                               
                                 @endif
                                 
                             </tr>
